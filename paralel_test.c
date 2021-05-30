@@ -4,7 +4,7 @@
 #include <time.h> // time()
 
 #define L 5000
-#define SEED (time(NULL)) // random seed
+#define SEED (1622345249) // random seed
 
 int idx(int x, int y){
 	return y + x*L;
@@ -27,6 +27,7 @@ int main(void){
 
 	//rand config
 	srand(SEED);
+	printf("%d\n", SEED);
 
 	double start = 0.0;
 	double elapsed = 0.0;
