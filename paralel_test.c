@@ -3,7 +3,7 @@
 #include <omp.h>
 #include <time.h> // time()
 
-#define L 5
+#define L 200
 #define SEED (time(NULL)) // random seed
 
 int idx(int x, int y){
@@ -36,15 +36,16 @@ int main(void){
 
 	#pragma omp parallel num_threads(4)  reduction(+:M)
 	{
-		for (i=0; i<L; i++){
-			for (j=0; j<L; j++){
-				float p = rand()/(float)RAND_MAX;			
-				matrix[idx(i,j)] = (p<0.5) ? -1:1;
+		#pragma omp critical
+		{
+			for (i=0; i<L; i++){
+				for (j=0; j<L; j++){
+					float p = rand()/(float)RAND_MAX;			
+					matrix[idx(i,j)] = (p<0.5) ? -1:1;
+				}
 			}
 		}
-		#pragma omp barrier
 		//if (L < 10) print_matrix(matrix);
-		
 		for (i = 0; i < L; ++i){
 			for ( j = 0; j < L; ++j){
 				M += matrix[idx(i,j)];
