@@ -34,21 +34,25 @@ int main(void){
 
 	int M=0; //Magentizacion
 	
-	for (i=0; i<L; i++){
-		for (j=0; j<L; j++){
-			float p = rand()/(float)RAND_MAX;			
-			matrix[idx(i,j)] = (p<0.5) ? -1:1;
+	#pragma omp prallel reduction(M:+) 
+	{
+		for (i=0; i<L; i++){
+			for (j=0; j<L; j++){
+				float p = rand()/(float)RAND_MAX;			
+				matrix[idx(i,j)] = (p<0.5) ? -1:1;
+			}
 		}
+
+		if (L < 10) print_matrix(matrix);
+
+		for (i = 0; i < L; ++i){
+			for ( j = 0; j < L; ++j){
+				M += matrix[idx(i,j)];
+			}
+		}
+		printf("Magent: %i %i \n", M, omp_get_thread_num());
 	}
 
-	if (L < 10) print_matrix(matrix);
-
-
-	for (i = 0; i < L; ++i){
-		for ( j = 0; j < L; ++j){
-			M += matrix[idx(i,j)];
-		}
-	}
 	printf("\n");
 	elapsed = omp_get_wtime()-start;
 	printf("Magent: %i \n", M );
