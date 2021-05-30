@@ -1,2 +1,14 @@
 Instrucciones:
 
+1.) Abre una seccion paralela. 
+
+#pragma omp parallel
+{...}
+
+2.) Hacer una reduccion.
+
+unsigned int i = 0;
+#pragma omp parallel reduction(+:i)
+{
+	i+=omp_get_thread_num();
+}
