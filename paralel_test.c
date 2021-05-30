@@ -3,7 +3,7 @@
 #include <omp.h>
 #include <time.h> // time()
 
-#define L 200
+#define L 5000
 #define SEED (time(NULL)) // random seed
 
 int idx(int x, int y){
@@ -34,32 +34,33 @@ int main(void){
 
 	int M=0; //Magentizacion
 
-	#pragma omp parallel num_threads(4)  reduction(+:M)
+	#pragma omp parallel 
 	{
-		#pragma omp critical
-		{
-			for (i=0; i<L; i++){
-				for (j=0; j<L; j++){
-					float p = rand()/(float)RAND_MAX;			
-					matrix[idx(i,j)] = (p<0.5) ? -1:1;
-				}
+		#pragma omp for collapse(2) 
+		for (i=0; i<L; i++){
+			for (j=0; j<L; j++){
+				float p = rand()/(float)RAND_MAX;			
+				matrix[idx(i,j)] = (p<0.5) ? -1:1;
+				//printf("[%d, %d, %d, %d ] ", i,j, omp_get_thread_num(), matrix[idx(i,j)]);
 			}
 		}
-		//if (L < 10) print_matrix(matrix);
+		#pragma omp for collapse(2)
 		for (i = 0; i < L; ++i){
 			for ( j = 0; j < L; ++j){
 				M += matrix[idx(i,j)];
 			}
 		}
-		printf("Magent: %2i %2i \n", M, omp_get_thread_num());
-	}
+	}  
+
+
+
+	printf("Magent: %2i %2i \n", M, omp_get_thread_num());
+
 
 	printf("\n");
 	elapsed = omp_get_wtime()-start;
 	printf("Magent: %i \n", M );
 	printf("Tiempo: %f \n", elapsed );
-
-
 
 	free(matrix);
 	return 0;
