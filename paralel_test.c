@@ -34,23 +34,22 @@ int main(void){
 
 	int M=0; //Magentizacion
 
-	#pragma omp parallel 
-	{
-		#pragma omp for collapse(2) 
-		for (i=0; i<L; i++){
-			for (j=0; j<L; j++){
-				float p = rand()/(float)RAND_MAX;			
-				matrix[idx(i,j)] = (p<0.5) ? -1:1;
-				//printf("[%d, %d, %d, %d ] ", i,j, omp_get_thread_num(), matrix[idx(i,j)]);
-			}
-		}
-		#pragma omp for collapse(2)
-		for (i = 0; i < L; ++i){
-			for ( j = 0; j < L; ++j){
-				M += matrix[idx(i,j)];
-			}
-		}
-	}  
+
+				for (i=0; i<L; i++){
+					for (j=0; j<L; j++){
+						float p = rand()/(float)RAND_MAX;			
+						matrix[idx(i,j)] = (p<0.5) ? -1:1;
+						//printf("[%d, %d, %d, %d ] ", i,j, omp_get_thread_num(), matrix[idx(i,j)]);
+					}
+				}
+				
+
+				for (i = 0; i < L; ++i){
+					for ( j = 0; j < L; ++j){
+						M += matrix[idx(i,j)];
+					}
+				}
+	  
 
 
 
